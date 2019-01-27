@@ -9,6 +9,6 @@ P0 is the SPEKTRUM2048 output
 Make sure to:
 1. Install the `Modified DigisparkSoftSerial` library
 1. Check the baudrate using `digispark_baud` sketch and some type of frequency measuring device such as:
- * Oscilloscope (best)
- * Another Arduino with a good frequency counter sketch
+   * Oscilloscope (best)
+   * Another Arduino with a good frequency counter sketch
 1. Compile using `"Digispark (16MHz - No USB)"`
