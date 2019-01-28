@@ -41,7 +41,7 @@
 #define S_AUX6 0x50
 #define S_AUX7 0x58
 
-bool bind = false, use1mbps = true, started = false, secondpass = false;
+bool bind = false, use1mbps = true, started = false;
 byte hopping_channels[4], data[16], spektrum[16];
 byte tx_addr[5];
 byte ch_index = 2, ch_indexl = 1;
@@ -208,33 +208,31 @@ void toSpektrum() {
   spektrum[8] = S_R | r >> 7; spektrum[9] = (r << 1) & 0xff;
   spektrum[10] = S_G | (0x07 * th); spektrum[11] = 0xff * th;
   spektrum[12] = S_AUX1 | (0x07 * id); spektrum[13] = 0xff * id;
-  if (secondpass) {
-    if (td != tdl) {
-      tempch = S_AUX3; tempval = 2047 * td;
-      tdl = td;
-    } else if (tt != ttl) {
-      tempval = trimToSpektrum(tt);
-      tempch = S_AUX4;
-      ttl = tt;
-    } else if (ta != tal) {
-      tempval = trimToSpektrum(ta);
-      tempch = S_AUX5;
-      tal = ta;
-    } else if (te != tel) {
-      tempval = trimToSpektrum(te);
-      tempch = S_AUX6;
-      tel = te;
-    } else if (tr != trl) {
-      tempval = trimToSpektrum(tr);
-      tempch = S_AUX7;
-      trl = tr;
-    } else {
-      tempch = S_AUX2; tempval = 2047 * dr;
-    }
-    secondpass = false;
+
+  if (td != tdl) {
+    tempch = S_AUX3; tempval = 2047 * td;
+    tdl = td;
+  } else if (tt != ttl) {
+    tempval = trimToSpektrum(tt);
+    tempch = S_AUX4;
+    ttl = tt;
+  } else if (ta != tal) {
+    tempval = trimToSpektrum(ta);
+    tempch = S_AUX5;
+    tal = ta;
+  } else if (te != tel) {
+    tempval = trimToSpektrum(te);
+    tempch = S_AUX6;
+    tel = te;
+  } else if (tr != trl) {
+    tempval = trimToSpektrum(tr);
+    tempch = S_AUX7;
+    trl = tr;
   } else {
-    secondpass = true;
+    tempch = S_AUX2; tempval = 2047 * dr;
+    ttl = 0; tal = 0; tel = 0; trl = 0; tdl = 2;
   }
+
   spektrum[14] = tempch | tempval >> 8; spektrum[15] = tempval & 0xff;
   mySerial.write(spektrum, 16);
 }
