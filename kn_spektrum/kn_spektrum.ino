@@ -200,7 +200,7 @@ void loop() {
 }
 
 void toSpektrum() {
-  int plostc = plost * 0.4;
+  int plostc = plost >> 1;
   spektrum[0] = plostc >> 8; spektrum[1] = plostc & 0xff;
   spektrum[2] = S_T | t >> 7; spektrum[3] = (t << 1) & 0xff;
   spektrum[4] = S_A | a >> 7; spektrum[5] = (a << 1) & 0xff;
@@ -238,5 +238,8 @@ void toSpektrum() {
 }
 
 int trimToSpektrum(byte rawTrim) {
-  return constrain((rawTrim * 50) - 3976, 0, 2047);
+  int rt = (rawTrim * 201) - 19076;
+  rt = (rt > 2047) ? 2047 : rt;
+  rt = (rt < 0) ? 0 : rt;
+  return rt;
 }
