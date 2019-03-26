@@ -12,3 +12,12 @@ Make sure to:
    * Oscilloscope (best)
    * Another Arduino with a good frequency counter sketch
 1. Compile using `"Digispark (16MHz - No USB)"`
+
+## Optimizations
+|Opt|Flash|RAM|
+|---|---|---|
+|-Os|4634|215|
+|-O0 <td colspan=2>NaN - volatile error
+|-O1|4666|215|
+|-O2|4658|215|
+|-O3|4716|215|

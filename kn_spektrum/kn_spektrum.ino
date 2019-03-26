@@ -42,15 +42,15 @@
 #define S_AUX7 0x58
 
 bool bind = false, use1mbps = true, started = false;
-byte hopping_channels[4], data[16], spektrum[16];
-byte tx_addr[5];
-byte ch_index = 2, ch_indexl = 1;
+byte hopping_channels[4], data[16], spektrum[16], tx_addr[5];
+byte ch_index = 2, ch_indexl = 1, deadline = 13;
 unsigned long timing = 0;
-int t, a, e, r, deadline = 13;
+unsigned int t, a, e, r;
 byte tt, ta, te, tr, sw, th, id, dr, td;
 byte ttl = 0, tal = 0, tel = 0, trl = 0, tdl = 2;
 unsigned int plost = 0;
-int tempval = 0, tempch = 0;
+unsigned int tempval = 0;
+byte tempch = 0;
 
 SoftSerial mySerial(-1, 0);
 
@@ -62,7 +62,7 @@ void cleanArray(byte *arr, byte num) {
 
 void setup() {
   mySerial.begin(115200);
-  delay(500);
+  delay(100);
 
   pinMode(MOSI_pin, OUTPUT);
   pinMode(SCK_pin, OUTPUT);
@@ -173,14 +173,10 @@ void loop() {
     NRF24L01_ReadPayload(data, 16);
     NRF24L01_WriteReg(NRF24L01_07_STATUS, 0x40);
 
-    t = data[0] << 8;
-    t += data[1];
-    a = data[2] << 8;
-    a += data[3];
-    e = data[4] << 8;
-    e += data[5];
-    r = data[6] << 8;
-    r += data[7];
+    t = (data[0] << 8) | data[1];
+    a = (data[2] << 8) | data[3];
+    e = (data[4] << 8) | data[5];
+    r = (data[6] << 8) | data[7];
     tt = data[8];
     ta = data[9];
     te = data[10];
@@ -190,10 +186,12 @@ void loop() {
     id = bitRead(sw, 2);
     dr = bitRead(sw, 0);
     td = bitRead(sw, 6);
-    toSpektrum();
 
     ch_index++;
     timing = millis();
+
+    toSpektrum();
+    
     started = true;
     deadline = 13;
   }
